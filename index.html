@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dorksense: угадай фильм по эмодзи</title>
-    <!-- Пиксельный шрифт для стиля dork/retro -->
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>dorksense: угадай фильм по эмодзи (для старшего поколения)</title>
+    <!-- Шрифт с хорошей читаемостью (не слишком игровой, но сохраняем стиль) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        /* Глобальный dorksense-стиль: тёмный фон, неон, глитч-эффекты */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,126 +14,96 @@
         }
 
         body {
-            background: #0b0d1e;
-            font-family: 'Press Start 2P', cursive, monospace;
+            background: #0a0f1e; /* тёмно-синий фон */
+            font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 2rem 1rem;
-            position: relative;
-            color: #c0f0f0;
-            /* лёгкий шум для текстурки */
-            background-image: repeating-linear-gradient(45deg, rgba(0,255,255,0.02) 0px, rgba(0,255,255,0.02) 2px, transparent 2px, transparent 4px);
+            color: #fff;
+            background-image: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.1) 0%, transparent 30%);
         }
 
-        /* глитч-оверлей */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%);
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 10;
-            animation: scan 8s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 8px; }
-        }
-
-        /* неоновый заголовок с гличем */
         h1 {
-            font-size: 2rem;
-            margin-bottom: 2rem;
+            font-size: 3rem;
+            font-weight: 900;
             text-align: center;
-            text-transform: uppercase;
-            color: #ff00ff;
-            text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #00ffff, 2px 2px 0 #00ffff;
+            color: #FFD700; /* золотой */
+            text-shadow: 0 0 10px #FFA500, 0 0 20px #FF4500;
+            margin-bottom: 2rem;
             letter-spacing: 2px;
             word-break: break-word;
-            animation: glitch 3s infinite steps(1);
-        }
-
-        @keyframes glitch {
-            0%, 100% { transform: skew(0deg, 0deg); opacity: 1; }
-            5% { transform: skew(2deg, 1deg); text-shadow: -3px 0 cyan, 3px 0 red; }
-            10% { transform: skew(-2deg, -1deg); text-shadow: 2px 0 yellow, -2px 0 blue; }
-            15% { transform: skew(0deg, 0deg); text-shadow: 0 0 5px #ff00ff, 0 0 10px #00ffff; }
-        }
-
-        /* кнопка в dork-стиле */
-        .dork-btn {
-            font-family: 'Press Start 2P', cursive;
-            background: #10121f;
-            color: #0ff;
-            border: 3px solid #f0f;
-            padding: 12px 24px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin-bottom: 2.5rem;
-            box-shadow: 0 0 10px #f0f, 0 0 20px #0ff;
             text-transform: uppercase;
-            transition: 0.2s;
-            letter-spacing: 1px;
         }
 
-        .dork-btn:hover {
-            background: #1f1f3f;
-            color: #ff99ff;
-            border-color: #ff00ff;
-            box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
-            transform: scale(1.02);
+        /* Кнопка сброса — большая и контрастная */
+        .reset-btn {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: #FFD700;
+            color: #0a0f1e;
+            border: 4px solid #fff;
+            padding: 20px 50px;
+            border-radius: 60px;
+            cursor: pointer;
+            margin-bottom: 3rem;
+            box-shadow: 0 0 20px #FFD700, 0 0 40px #FF8C00;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            letter-spacing: 2px;
         }
 
-        /* сетка карточек */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
-            max-width: 1400px;
+        .reset-btn:hover {
+            background: #FFA500;
+            color: #000;
+            border-color: #FFD700;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #FFA500, 0 0 60px #FF4500;
+        }
+
+        /* Контейнер для карточек — одна карточка в строку */
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
             width: 100%;
-            justify-content: center;
-            margin-bottom: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
-        /* контейнер карточки с 3D-перспективой */
+        /* Карточка — широкая, почти на всю ширину */
         .card {
             width: 100%;
-            aspect-ratio: 1 / 1; /* квадратная */
-            max-width: 320px;
-            margin: 0 auto; /* центрирование в ячейке */
+            max-width: 950px;
+            aspect-ratio: 16 / 9; /* широкий формат */
             cursor: pointer;
-            perspective: 1500px;
+            perspective: 2000px;
+            filter: drop-shadow(0 0 15px gold);
             transition: filter 0.3s;
-            filter: drop-shadow(0 0 8px cyan);
         }
 
         .card:hover {
-            filter: drop-shadow(0 0 15px magenta);
+            filter: drop-shadow(0 0 25px orange);
         }
 
-        /* внутренний вращающийся блок */
         .card-inner {
             position: relative;
             width: 100%;
             height: 100%;
-            text-align: center;
-            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
             transform-style: preserve-3d;
-            border-radius: 12px;
-            box-shadow: 0 0 0 3px #0ff, 0 0 0 6px #10121f;
+            border-radius: 30px;
+            box-shadow: 0 0 0 5px #FFD700, 0 0 0 10px #0a0f1e;
         }
 
-        /* состояние переворота */
         .card.flipped .card-inner {
             transform: rotateY(180deg);
         }
 
-        /* общие стили для передней и задней стороны */
         .card-front, .card-back {
             position: absolute;
             width: 100%;
@@ -143,81 +112,72 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1.2rem;
-            box-sizing: border-box;
-            border-radius: 10px;
-            font-size: 2.2rem;
-            line-height: 1.4;
+            padding: 1.5rem;
+            border-radius: 30px;
             text-align: center;
             word-break: break-word;
-            background: #0d0f1c;
-            background-image: radial-gradient(circle at 30% 30%, rgba(255,0,255,0.1) 0%, transparent 50%);
-            border: 2px solid #00ffff;
-            box-shadow: inset 0 0 20px rgba(0,255,255,0.3);
+            background: #0a0f1e;
+            border: 6px solid #FFD700;
+            box-shadow: inset 0 0 40px rgba(255, 215, 0, 0.5);
         }
 
-        /* лицевая сторона: крупные эмодзи */
+        /* Лицевая сторона — огромные эмодзи */
         .card-front {
-            color: #ffccff;
-            font-size: 4.5rem; /* эмодзи большие */
-            background: #0a0c1a;
-            border-color: #ff00ff;
-            box-shadow: inset 0 0 30px rgba(255,0,255,0.3);
+            font-size: 8rem; /* очень крупно */
+            line-height: 1.2;
+            color: #fff;
+            background: #1a1f30;
+            border-color: #FFD700;
+            box-shadow: inset 0 0 60px rgba(255, 215, 0, 0.3);
         }
 
-        /* задняя сторона: название фильма */
+        /* Задняя сторона — название фильма крупным шрифтом */
         .card-back {
             transform: rotateY(180deg);
-            font-size: 1.1rem;
-            font-family: 'Press Start 2P', monospace;
-            color: #00ffff;
-            text-shadow: 0 0 5px #00ffff;
-            background: #10121f;
-            border-color: #00ffff;
-            flex-direction: column;
-            gap: 0.5rem;
+            font-size: 2.8rem; /* очень крупно */
+            font-weight: 900;
+            color: #FFD700;
+            background: #0a0f1e;
+            border-color: #FFD700;
+            text-shadow: 4px 4px 0 #000, 0 0 20px gold;
+            line-height: 1.3;
+            padding: 2rem;
         }
 
-        /* дополнительный стиль для длинных названий */
-        .card-back span {
-            display: block;
-            max-width: 100%;
-        }
-
-        /* адаптация для мобильных */
+        /* Адаптация для мобильных (но шрифт остаётся большим) */
         @media (max-width: 700px) {
-            h1 { font-size: 1.4rem; }
-            .card-front { font-size: 3rem; }
-            .card-back { font-size: 0.8rem; }
-            .card { max-width: 280px; }
-            .dork-btn { font-size: 0.7rem; padding: 10px 16px; }
+            h1 { font-size: 2.2rem; }
+            .reset-btn { font-size: 1.4rem; padding: 15px 30px; }
+            .card-front { font-size: 5rem; }
+            .card-back { font-size: 1.8rem; }
         }
 
         @media (max-width: 450px) {
-            .card-front { font-size: 2.8rem; }
-            .card-back { font-size: 0.7rem; }
+            .card-front { font-size: 4rem; }
+            .card-back { font-size: 1.4rem; }
         }
 
-        /* footer */
         .footer {
-            margin-top: 3rem;
-            color: #63688a;
-            font-size: 0.7rem;
-            text-shadow: 0 0 2px cyan;
+            margin-top: 4rem;
+            color: #aaa;
+            font-size: 1.2rem;
+            text-align: center;
+            text-shadow: 0 0 5px gold;
         }
     </style>
 </head>
 <body>
-    <h1>🍿 CINEMA DORKENSE 🎬</h1>
-    <button class="dork-btn" id="resetBtn">⟲ СБРОСИТЬ ВСЁ</button>
+    <h1>🎬 КИНО-ЭМОДЖИ 🎞️</h1>
+    <button class="reset-btn" id="resetAll">⟳ СБРОСИТЬ ВСЕ КАРТОЧКИ</button>
 
-    <div class="card-grid" id="cardGrid"></div>
+    <div class="cards-container" id="cardContainer"></div>
 
-    <div class="footer">⚡ кликни по карточке — узнай фильм ⚡</div>
+    <div class="footer">👆 нажми на карточку — узнай фильм</div>
 
     <script>
         (function() {
-            // ---------- данные фильмов: эмодзи (лицевая) + название (оборот) ----------
+            // --- Массив фильмов: эмодзи (лицевая) + название (оборот) ---
+            // Добавлено более 30 известных фильмов для аудитории 40–70+
             const movies = [
                 { emoji: "🕊️", title: "Любовь и голуби" },
                 { emoji: "🏙️😢🚫", title: "Москва слезам не верит" },
@@ -234,13 +194,32 @@
                 { emoji: "👴🏻👨🏻‍🦳", title: "Батя. Дед" },
                 { emoji: "⛸️❤️", title: "Лёд" },
                 { emoji: "👴🏻🚗🔧", title: "Вторая жизнь Уве" },
-                { emoji: "🏠🧖‍♂️🥂", title: "Ирония судьбы, или С лёгким паром!" }
+                { emoji: "🏠🧖‍♂️🥂", title: "Ирония судьбы, или С лёгким паром!" },
+                { emoji: "🌊🐎⚔️", title: "Тихий Дон" },
+                { emoji: "🌾🔥", title: "Они сражались за Родину" },
+                { emoji: "👴🏻👴🏻🔫", title: "Старики-разбойники" },
+                { emoji: "🐂💰", title: "Золотой телёнок" },
+                { emoji: "👸⛽", title: "Королева бензоколонки" },
+                { emoji: "🐯🚢", title: "Полосатый рейс" },
+                { emoji: "☀️🏖️➕", title: "Три плюс два" },
+                { emoji: "🎫➕", title: "Спортлото-82" },
+                { emoji: "✈️🎵", title: "В бой идут одни «старики»" },
+                { emoji: "🎖️👨🏻✈️👨🏻✈️", title: "Офицеры" },
+                { emoji: "🌅🔫👧🏻", title: "А зори здесь тихие" },
+                { emoji: "🚔🔪🌃", title: "Место встречи изменить нельзя" },
+                { emoji: "🌪️👩‍🦰💔", title: "Унесённые ветром" },
+                { emoji: "🎭😱", title: "Фантомас" },
+                { emoji: "🎩🤵🔫", title: "Крёстный отец" },
+                { emoji: "🐺👩🏻🕊️", title: "Танцующая с волками" },
+                { emoji: "🌸🏭👫", title: "Весна на Заречной улице" },
+                { emoji: "🏗️👷‍♂️", title: "Высота" },
+                { emoji: "🚣👬👬", title: "Верные друзья" },
+                { emoji: "🌻🚜💔", title: "Дело было в Пенькове" }
             ];
 
-            // контейнер для карточек
-            const grid = document.getElementById('cardGrid');
+            const container = document.getElementById('cardContainer');
 
-            // функция создания одной карточки
+            // Функция создания одной карточки
             function createCard(movie) {
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -250,20 +229,17 @@
 
                 const front = document.createElement('div');
                 front.className = 'card-front';
-                front.textContent = movie.emoji;   // эмодзи строкой
+                front.textContent = movie.emoji;
 
                 const back = document.createElement('div');
                 back.className = 'card-back';
-                // разбиваем длинное название на строки (для лучшего вида)
-                const titleSpan = document.createElement('span');
-                titleSpan.textContent = movie.title;
-                back.appendChild(titleSpan);
+                back.textContent = movie.title;
 
                 inner.appendChild(front);
                 inner.appendChild(back);
                 card.appendChild(inner);
 
-                // клик для переворота (toggle класса flipped)
+                // Клик для переворота
                 card.addEventListener('click', function(e) {
                     e.stopPropagation();
                     this.classList.toggle('flipped');
@@ -272,20 +248,17 @@
                 return card;
             }
 
-            // заполняем сетку карточками
+            // Заполняем контейнер
             movies.forEach(m => {
-                grid.appendChild(createCard(m));
+                container.appendChild(createCard(m));
             });
 
-            // кнопка сброса — убирает класс flipped у всех карточек
-            document.getElementById('resetBtn').addEventListener('click', function() {
-                const allCards = document.querySelectorAll('.card');
-                allCards.forEach(card => {
+            // Сброс всех карточек
+            document.getElementById('resetAll').addEventListener('click', function() {
+                document.querySelectorAll('.card').forEach(card => {
                     card.classList.remove('flipped');
                 });
             });
-
-            // опционально: лёгкая рандомная подсветка при загрузке (просто для атмосферы)
         })();
     </script>
 </body>
